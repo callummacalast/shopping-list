@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ShoppingListController;
 use App\Http\Controllers\ShoppingListItemController;
+use App\Models\ShoppingList;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,7 +22,26 @@ use Illuminate\Support\Facades\Route;
 /**
  * ShoppingListItemController
  */
-Route::get('/shopping-list', [ShoppingListItemController::class, 'index'])->name('shopping-list.index');
+
+Route::middleware('auth')->group(function () {
+    Route::controller(ShoppingListController::class)->group(function () {
+        Route::get('shopping-list', 'index')->name('shopping-list');
+        Route::patch('shopping-list/{list}', 'update')->name('shopping-list.update');
+        Route::get('shopping-list/share', 'share')->name('shopping-list.share');
+        Route::post('shopping-list/share', 'sendList')->name('shopping-list.send');
+    });
+
+
+    Route::controller(ShoppingListItemController::class)->group(function () {   
+        Route::post('/shopping-list/create', 'store')->name('item.create');
+        Route::post('/shopping-list', 'store')->name('item.store');
+        Route::post('/shopping-list/{shoppingListItem}', 'show')->name('item.show');
+        Route::get('/purchased', 'purchased')->name('item.purchase');
+        Route::get('/shopping-list/{shoppingListItem}/delete', 'destroy')->name('item.destroy');
+    })->middleware('auth');
+});
+
+
 
 
 Route::get('/', function () {
@@ -34,7 +55,6 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

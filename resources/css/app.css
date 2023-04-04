@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.purchased p{
+    text-decoration: line-through;
+    transition: 0.5s ease-in-out;
+    color: green;
+}
+
+.hide-modal{
+    display: none;
+    transition: ease-in-out 0.5s
+}

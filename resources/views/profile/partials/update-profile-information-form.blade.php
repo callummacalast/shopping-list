@@ -12,6 +12,29 @@
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
     </form>
+    <form method="post" action="{{ route('shopping-list.update', $user->shoppingList->id) }}" class="mt-6 space-y-6">
+        @csrf
+        @method('patch')
+
+        <div>
+            <x-input-label for="spen_limit" :value="__('Spend Limit')" />
+            <x-text-input id="spend_limit" name="spend_limit" max="100000" min="0" type="number" class="mt-1 block w-full" :value="old('spend_limit', $user->shoppingList->spend_limit)" required autofocus />
+            <x-input-error class="mt-2" :messages="$errors->get('spend_limit')" />
+        </div>
+
+        <div class="flex items-center gap-4">
+            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            @if (session('status') === 'profile-updated')
+                <p
+                    x-data="{ show: true }"
+                    x-show="show"
+                    x-transition
+                    x-init="setTimeout(() => show = false, 2000)"
+                    class="text-sm text-gray-600"
+                >{{ __('Saved.') }}</p>
+            @endif
+        </div>
+    </form>
 
     <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
         @csrf
@@ -62,3 +85,15 @@
         </div>
     </form>
 </section>
+
+<script>
+    let limit = document.querySelector('#spend_limit');
+
+    console.log(limit.value);
+    limit.oninput = () => {
+        console.log(limit.value);
+        if(limit.value.length > 6) {
+            limit.value = limit.value.slice(0,6)
+        }
+    }
+</script>
