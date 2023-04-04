@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('shopping_list_items', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('shopping_lists', function (Blueprint $table) {
+            $table->float('spend_limit')->nullable()->after('user_id');
         });
     }
 
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('shopping_list_items');
+        Schema::table('shopping_lists', function (Blueprint $table) {
+            $table->dropColumn('spend_limit');
+        });
     }
 };
